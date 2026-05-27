@@ -1,48 +1,7 @@
 version: '3.9'
 
 services:
-  # PostgreSQL Database
-  db:
-    image: postgres:15-alpine
-    container_name: chat-db
-    environment:
-      POSTGRES_USER: ${DB_USER:-chatuser}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-chatpass}
-      POSTGRES_DB: ${DB_NAME:-chatdb}
-      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
-    ports:
-      - "5432:5432"
-    networks:
-      - chat-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-chatuser}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
-  # Redis Cache
-  cache:
-    image: redis:7-alpine
-    container_name: chat-cache
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redispass}
-    volumes:
-      - redis_data:/data
-    ports:
-      - "6379:6379"
-    networks:
-      - chat-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
-  # FastAPI Application
+  # FastAPI Application (connects to Render.com services)
   app:
     build:
       context: .
@@ -52,31 +11,24 @@ services:
     environment:
       DEBUG: ${DEBUG:-False}
       ENVIRONMENT: ${ENVIRONMENT:-development}
-      DB_HOST: ${DB_HOST:-db}
-      DB_PORT: ${DB_PORT:-5432}
-      DB_USER: ${DB_USER:-chatuser}
-      DB_PASSWORD: ${DB_PASSWORD:-chatpass}
-      DB_NAME: ${DB_NAME:-chatdb}
-      REDIS_HOST: ${REDIS_HOST:-cache}
-      REDIS_PORT: ${REDIS_PORT:-6379}
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispass}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_USER: ${REDIS_USER}
-      REDIS_SSL: ${REDIS_SSL:-False}
+      REDIS_SSL: ${REDIS_SSL}
       SECRET_KEY: ${SECRET_KEY}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
-      AI_MODEL: ${AI_MODEL:-gemini-pro}
+      AI_MODEL: ${AI_MODEL}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-3.5-turbo}
-      FORCE_HTTPS: ${FORCE_HTTPS:-False}
-    volumes:
-      - ./app:/app/app:ro
+      OPENAI_MODEL: ${OPENAI_MODEL}
+      FORCE_HTTPS: ${FORCE_HTTPS}
     ports:
       - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
-      cache:
-        condition: service_healthy
     networks:
       - chat-network
     healthcheck:
@@ -102,18 +54,7 @@ services:
       - app
     networks:
       - chat-network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     restart: unless-stopped
-
-volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
 
 networks:
   chat-network:
