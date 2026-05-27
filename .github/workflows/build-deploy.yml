@@ -135,12 +135,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # FIX: Use printf to preserve multi-line SSH key exactly — echo mangles newlines
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+          ssh-keygen -l -f ~/.ssh/deploy_key
 
       - name: Deploy to EC2
         run: |
