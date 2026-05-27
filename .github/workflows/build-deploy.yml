@@ -157,12 +157,13 @@ jobs:
         run: |
           echo "Waiting for app to be ready..."
           for i in {1..30}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.DEPLOY_HOST }}/health || echo "000")
+            # Use http (port 80 via nginx), -k skips SSL verify, remove || echo to avoid double-000
+            STATUS=$(curl -sk -o /dev/null -w "%{http_code}" http://${{ secrets.DEPLOY_HOST }}/health 2>/dev/null)
+            echo "Attempt $i/30 — status: $STATUS"
             if [ "$STATUS" = "200" ]; then
               echo "✅ Deployment successful — health check passed"
               exit 0
             fi
-            echo "Attempt $i/30 — status: $STATUS, retrying in 10s..."
             sleep 10
           done
           echo "❌ Deployment health check failed after 5 minutes"
