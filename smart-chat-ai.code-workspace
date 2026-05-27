@@ -1,0 +1,141 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "Smart Chat AI"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.python",
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.python",
+      "editor.formatOnSave": true
+    },
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/node_modules": true
+    },
+    "search.exclude": {
+      "**/__pycache__": true,
+      "venv": true,
+      ".venv": true,
+      "node_modules": true
+    },
+    "docker.showExplorer": true,
+    "docker.commands.pruneSystem": true,
+    "cSpell.words": [
+      "FastAPI",
+      "uvicorn",
+      "sqlalchemy",
+      "psycopg2",
+      "Pydantic",
+      "asyncio",
+      "redis",
+      "openai",
+      "bcrypt",
+      "passlib"
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "ms-python.black-formatter",
+      "ms-python.debugpy",
+      "Docker.vscode-docker",
+      "ms-vscode-remote.remote-containers",
+      "Thunder-Client.thunder-client",
+      "ms-vscode.makefile-tools",
+      "eamodio.gitlens",
+      "GitHub.copilot"
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: FastAPI",
+        "type": "python",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": [
+          "app.main:app",
+          "--host",
+          "0.0.0.0",
+          "--port",
+          "8000",
+          "--reload"
+        ],
+        "jinja": true,
+        "justMyCode": true,
+        "env": {
+          "DEBUG": "True"
+        }
+      }
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Docker: Up",
+        "type": "shell",
+        "command": "docker-compose",
+        "args": ["up", "-d"],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        }
+      },
+      {
+        "label": "Docker: Down",
+        "type": "shell",
+        "command": "docker-compose",
+        "args": ["down"],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        }
+      },
+      {
+        "label": "Docker: Logs",
+        "type": "shell",
+        "command": "docker-compose",
+        "args": ["logs", "-f"],
+        "isBackground": true,
+        "problemMatcher": {
+          "pattern": {
+            "regexp": "^.*$",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^.*",
+            "endsPattern": "^.*"
+          }
+        }
+      },
+      {
+        "label": "Tests: Run All",
+        "type": "shell",
+        "command": "docker-compose",
+        "args": ["exec", "app", "pytest"],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        }
+      }
+    ]
+  }
+}
