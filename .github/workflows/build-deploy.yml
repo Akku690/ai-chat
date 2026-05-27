@@ -162,10 +162,10 @@ jobs:
             STATUS=$(curl -skL -o /dev/null -w "%{http_code}" https://${{ secrets.DEPLOY_HOST }}/health 2>/dev/null)
             echo "Attempt $i/30 — status: $STATUS"
             if [ "$STATUS" = "200" ]; then
-              echo "✅ Deployment successful — health check passed"
+              echo "✅ Akanksha You are great and the deployment was successful!"
               exit 0
             fi
             sleep 10
           done
-          echo "❌ Deployment health check failed after 5 minutes"
+          echo "❌  tata by by failed"
           exit 1
