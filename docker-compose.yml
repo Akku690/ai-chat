@@ -48,13 +48,28 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: chat-app
+    env_file: .env
     environment:
       DEBUG: ${DEBUG:-False}
-      DATABASE_URL: postgresql://${DB_USER:-chatuser}:${DB_PASSWORD:-chatpass}@db:5432/${DB_NAME:-chatdb}
-      REDIS_URL: redis://:${REDIS_PASSWORD:-redispass}@cache:6379/0
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-chatuser}
+      DB_PASSWORD: ${DB_PASSWORD:-chatpass}
+      DB_NAME: ${DB_NAME:-chatdb}
+      REDIS_HOST: ${REDIS_HOST:-cache}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispass}
+      REDIS_USER: ${REDIS_USER}
+      REDIS_SSL: ${REDIS_SSL:-False}
       SECRET_KEY: ${SECRET_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      AI_MODEL: ${AI_MODEL:-gemini-pro}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-3.5-turbo}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      FORCE_HTTPS: ${FORCE_HTTPS:-False}
     volumes:
       - ./app:/app/app:ro
     ports:
