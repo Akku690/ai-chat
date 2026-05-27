@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     def REDIS_URL(self) -> str:
         """Construct Redis connection URL"""
         if self.REDIS_PASSWORD:
-            return f"redis://{self.REDIS_USER}:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0"
+            return f"rediss://{self.REDIS_USER}:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0?ssl_cert_reqs=none" if self.REDIS_SSL else f"redis://{self.REDIS_USER}:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0"
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/0"
 
     # AI Services
