@@ -10,9 +10,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  # ─────────────────────────────────────────────
-  # JOB 1: Build & push Docker image to GHCR
-  # ─────────────────────────────────────────────
+
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -60,9 +58,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.image.outputs.name }}:buildcache
           cache-to: type=registry,ref=${{ steps.image.outputs.name }}:buildcache,mode=max
 
-  # ─────────────────────────────────────────────
-  # JOB 2: Run tests
-  # ─────────────────────────────────────────────
+
   test:
     runs-on: ubuntu-latest
     services:
@@ -123,9 +119,7 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: false
 
-  # ─────────────────────────────────────────────
-  # JOB 3: Deploy to EC2 (main branch only)
-  # ─────────────────────────────────────────────
+ 
   deploy:
     needs: [build, test]
     runs-on: ubuntu-latest

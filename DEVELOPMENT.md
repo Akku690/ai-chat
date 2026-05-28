@@ -80,7 +80,7 @@ smart-chat-ai/
 │   ├── main.py             # FastAPI app
 │   ├── schemas.py          # Pydantic models
 │   ├── security.py         # JWT & auth
-│   ├── models/             # SQLAlchemy models
+│   ├── models/              SQLAlchemy models
 │   │   ├── user.py
 │   │   ├── conversation.py
 │   │   ├── message.py
