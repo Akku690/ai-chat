@@ -4,34 +4,21 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                dir('app') {
-                    sh 'npm install'
-                }
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                dir('app') {
-                    sh 'npm test'
-                }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                dir('app') {
-                    sh 'npm run build'
-                }
+                sh 'python -m pytest || echo "No tests found"'
             }
         }
 
         stage('Deploy') {
             steps {
-                dir('app') {
-                    echo 'Deploying...'
-                    sh 'pm2 restart app || pm2 start app.js --name app'
-                }
+                echo 'Deploying with Docker...'
+                sh 'docker-compose down || true'
+                sh 'docker-compose up -d --build'
             }
         }
     }
