@@ -4,27 +4,34 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'ls -la'
-                sh 'npm install'
+                dir('app') {
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                dir('app') {
+                    sh 'npm test'
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                dir('app') {
+                    sh 'npm run build'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying...'
-                sh 'pm2 restart app || pm2 start app.js --name app'
+                dir('app') {
+                    echo 'Deploying...'
+                    sh 'pm2 restart app || pm2 start app.js --name app'
+                }
             }
         }
     }
