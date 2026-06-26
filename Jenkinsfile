@@ -5,8 +5,9 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                    python3 -m venv venv
+                    python3.13 -m venv venv
                     . venv/bin/activate
+                    pip install --upgrade pip
                     pip install -r requirements.txt
                 '''
             }
@@ -16,7 +17,7 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-                    python3 -m pytest || echo "No tests found"
+                    python3.13 -m pytest || echo "No tests found"
                 '''
             }
         }
