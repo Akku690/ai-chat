@@ -4,13 +4,20 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'python -m pytest || echo "No tests found"'
+                sh '''
+                    . venv/bin/activate
+                    python3 -m pytest || echo "No tests found"
+                '''
             }
         }
 
