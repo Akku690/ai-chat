@@ -2,16 +2,9 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main',
-                    credentialsId: 'github-credentials',
-                    url: 'https://github.com/Akku690/ai-chat.git'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
+                sh 'ls -la'
                 sh 'npm install'
             }
         }
