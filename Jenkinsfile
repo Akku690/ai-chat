@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'NodeJS'   // must match name you set in Global Tools
-    }
-
     stages {
         stage('Clone Repository') {
             steps {
@@ -34,8 +30,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
-                // Add your deploy command here
+                echo 'Deploying...'
                 sh 'pm2 restart app || pm2 start app.js --name app'
             }
         }
