@@ -61,8 +61,17 @@ pipeline {
         stage('Health Check') {
             steps {
                 sh '''
-                    sleep 8
-                    curl -f http://localhost:8000/health || (echo "Health check failed" && exit 1)
+                    echo "Waiting for application to become healthy..."
+                    for i in $(seq 1 15); do
+                        if curl -sf http://localhost:8000/health > /dev/null; then
+                            echo "Health check passed."
+                            exit 0
+                        fi
+                        echo "Attempt $i failed, retrying in 4s..."
+                        sleep 4
+                    done
+                    echo "Health check failed after retries."
+                    exit 1
                 '''
             }
         }
