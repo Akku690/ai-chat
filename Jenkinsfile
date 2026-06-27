@@ -30,34 +30,20 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies (for tests)') {
-            steps {
-                sh '''
-                    cd "${APP_DIR}"
-                    python3.11 -m venv venv
-                    . venv/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
-                    pip install pytest
-                '''
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh '''
-                    cd "${APP_DIR}"
-                    . venv/bin/activate
-                    pytest -v || echo "No tests found or tests failed - continuing"
-                '''
-            }
-        }
-
         stage('Build') {
             steps {
                 sh '''
                     cd "${APP_DIR}"
                     docker compose build
+                '''
+            }
+        }
+
+        stage('Run Tests (inside container)') {
+            steps {
+                sh '''
+                    cd "${APP_DIR}"
+                    docker compose run --rm app pytest -v || echo "No tests found or tests failed - continuing"
                 '''
             }
         }
@@ -84,20 +70,7 @@ pipeline {
 
     post {
         success {
-            echo '✅ Deployment successful at ' + env.APP_DIR
+            echo '✅ Deployment successful.'
         }
         failure {
-            echo '❌ Pipeline failed. Recent container logs:'
-            sh '''
-                cd "${APP_DIR}"
-                docker compose logs --tail=50 || true
-            '''
-        }
-        always {
-            sh '''
-                cd "${APP_DIR}"
-                docker compose ps || true
-            '''
-        }
-    }
-}
+            echo '❌
