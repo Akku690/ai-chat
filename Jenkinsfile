@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sh '''
                     if [ ! -f "${APP_DIR}/.env" ]; then
-                        echo "ERROR: .env not found at ${APP_DIR}/.env — deploy aborted."
+                        echo "ERROR: .env not found at ${APP_DIR}/.env - deploy aborted."
                         exit 1
                     fi
                     echo ".env found, continuing."
@@ -70,7 +70,20 @@ pipeline {
 
     post {
         success {
-            echo '✅ Deployment successful.'
+            echo 'Deployment successful.'
         }
         failure {
-            echo '❌
+            echo 'Pipeline failed. Recent container logs:'
+            sh '''
+                cd "${APP_DIR}"
+                docker compose logs --tail=50 || true
+            '''
+        }
+        always {
+            sh '''
+                cd "${APP_DIR}"
+                docker compose ps || true
+            '''
+        }
+    }
+}
